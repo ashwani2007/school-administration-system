@@ -10,16 +10,13 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
 if (isset($_GET['id'])) {
     $id = $_GET['id'];
     
-    // Delete student from students table
-    $conn->query("DELETE FROM students WHERE user_id = $id");
-    
-    // Delete user
+    $conn->query("DELETE FROM teachers WHERE user_id = $id");
     $conn->query("DELETE FROM users WHERE id = $id");
     
-    header('Location: students.php?msg=deleted');
+    header('Location: teachers.php?msg=deleted');
     exit();
 }
 
-header('Location: students.php');
+header('Location: teachers.php');
 exit();
 ?>
