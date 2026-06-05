@@ -8,7 +8,7 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'student') {
 }
 
 // Get student info
-$sql = "SELECT u.*, s.roll_number, s.class_id FROM users u 
+$sql = "SELECT u.*, s.roll_number, s.class_id, s.father_name, s.mother_name FROM users u 
         JOIN students s ON u.id = s.user_id 
         WHERE u.id = ?";
 $stmt = $conn->prepare($sql);
@@ -43,6 +43,13 @@ $fees_stmt = $conn->prepare($fees_sql);
 $fees_stmt->bind_param('i', $student['id']);
 $fees_stmt->execute();
 $fees = $fees_stmt->get_result()->fetch_assoc();
+
+// Get results count
+$results_sql = "SELECT COUNT(*) as total FROM results WHERE student_id = ?";
+$results_stmt = $conn->prepare($results_sql);
+$results_stmt->bind_param('i', $student['id']);
+$results_stmt->execute();
+$results_data = $results_stmt->get_result()->fetch_assoc();
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -100,13 +107,19 @@ $fees = $fees_stmt->get_result()->fetch_assoc();
                     <p>Upcoming exams</p>
                     <a href="exams.php" class="btn" style="margin-top: 1rem; display: block; text-align: center;">View</a>
                 </div>
+
+                <div class="card">
+                    <h3>📊 Results</h3>
+                    <div class="number"><?php echo $results_data['total']; ?></div>
+                    <p>Exam results</p>
+                    <a href="results.php" class="btn" style="margin-top: 1rem; display: block; text-align: center;">View Results</a>
+                </div>
             </div>
 
             <div style="background: white; padding: 2rem; border-radius: 8px; margin-top: 2rem;">
                 <h3>Quick Links</h3>
                 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin-top: 1rem;">
                     <a href="timetable.php" class="btn">📅 View Timetable</a>
-                    <a href="results.php" class="btn">📊 View Results</a>
                     <a href="profile.php" class="btn">👤 My Profile</a>
                     <a href="feedback.php" class="btn">💬 Send Feedback</a>
                 </div>
